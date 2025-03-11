@@ -32,7 +32,6 @@ const Employement = () => {
         if (!file) return;
         try {
             const response = await uploadPdf(file);
-            console.log("Uploaded Resume URL:", response.data.resumeUrl);
             setValue("resume", response.data.resumeUrl);
         } catch (err) {
             console.error("Upload failed:", err);

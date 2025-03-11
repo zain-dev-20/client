@@ -34,7 +34,6 @@ const Home = () => {
     }
   };
 
-  console.log(forms, "???<<<!!@")
   return (
     <div className='w-[90vw] mx-auto py-4'>
       {

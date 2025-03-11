@@ -37,33 +37,6 @@ const initialState = {
     hobbies: [],
     newsletter: false,
   },
-  // formData: {
-  //   // name: "",
-  //   // email: "",
-  //   // password: "",
-  //   // confirmPassword: "",
-  //   // gender: "",
-  //   // dob: "",
-  //   // phoneNumber: "",
-  //   // altPhone: "",
-  //   // address1: "",
-  //   // address2: "",
-  //   // city: "",
-  //   // postalCode: "",
-  //   // country: "",
-  //   // jobTitle: "",
-  //   // employmentStatus: "",
-  //   // companyName: "",
-  //   // experience: "",
-  //   // resume: null,
-  //   // income: "",
-  //   // loanStatus: "",
-  //   // loanAmount: "",
-  //   // creditScore: "",
-  //   contactMode: "",
-  //   hobbies: [],
-  //   newsletter: false,
-  // },
 };
 
 const formSlice = createSlice({
@@ -84,7 +57,6 @@ const formSlice = createSlice({
       if (state[stateName]) {
         state[stateName] = { ...state[stateName], ...data };
       }
-      // state.formData = { ...state.formData, ...action.payload };
     },
     resetForm: (state) => {
       state.step = 1;
