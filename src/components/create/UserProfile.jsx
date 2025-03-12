@@ -21,11 +21,13 @@ const UserProfile = () => {
     const formData = useSelector((state) => state.form.userProfile);
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(schema),
-        defaultValues: formData,
+        defaultValues: {
+            ...formData,
+            dob: formData?.dob ? formData.dob.split('T')[0] : "",
+        },
     });
 
     const onSubmit = (data) => {
-        console.log(data)
         dispatch(updateFormData({stateName: "userProfile", data}));
         dispatch(nextStep());
     };

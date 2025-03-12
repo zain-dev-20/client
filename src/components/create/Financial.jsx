@@ -9,7 +9,7 @@ import FormButton from "../shareable/FormButton.jsx";
 const schema = yup.object({
     income: yup.number().required("Monthly income is Required"),
     loanStatus: yup.string().required("Loan status is Required"),
-    loanAmount: yup.number().optional(),
+    loanAmount: yup.string().optional(),
     creditScore: yup.number().required("credit is Required")
 }).required();
 
@@ -19,7 +19,10 @@ const Financial = () => {
     const formData = useSelector((state) => state.form.financialInfo);
     const { register, watch, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(schema),
-        defaultValues: formData,
+        defaultValues: {
+            ...formData,
+            loanAmount: 0,
+        },
     });
     const loanStatusVal = watch("loanStatus") == "yes"
     const onSubmit = (data) => {

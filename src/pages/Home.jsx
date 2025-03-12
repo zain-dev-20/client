@@ -5,44 +5,56 @@ import { FaTrash } from "react-icons/fa";
 import { IoChevronDownCircleSharp, IoChevronUpCircle } from "react-icons/io5";
 import { FaPenToSquare } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
+import { resetForm, updateFormData } from '../redux/slice.js';
+import { useDispatch } from 'react-redux';
 
 const Home = () => {
   const { data: forms, error, isLoading } = useGetAllFormsQuery();
   const [deleteForm, { isLoading: isDeleting }] = useDeleteFormMutation();
-
   const [expandedId, setExpandedId] = useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleToggle = (id) => {
     setExpandedId(expandedId === id ? null : id);
   };
 
-  const formatedValue = (key,value) => {
+  const formatedValue = (key, value) => {
     if (key.toLowerCase().includes("pass")) return "*".repeat(value.length)
-    else if(typeof value == "boolean") return String(value)
-    else if(Array.isArray(value)) return value.join(" ")
+    else if (typeof value == "boolean") return String(value)
+    else if (Array.isArray(value)) return value.join(" ")
     else return value
   }
 
   const handleDelete = async (id) => {
     try {
       await deleteForm(id).unwrap();
-      alert("Form deleted successfully!");
     } catch (error) {
       console.error("Error deleting form:", error);
-      alert("Failed to delete form");
     }
   };
 
+
+
+  const handleNavigate = (form) => {
+    dispatch(resetForm())
+    storeStates.map((state) => {
+      const data = { ...form[state.key] }
+      if (state.key == "userProfile") {
+        data.confirmPassword = data.password
+      }
+      dispatch(updateFormData({ stateName: state.key, data }));
+    })
+    navigate("/create", { state: form._id })
+  }
+
   return (
-    <div className='w-[90vw] mx-auto py-4'>
+    <div className={`w-[90vw] mx-auto py-4 ${!forms?.length > 0 && "items-center justify-center flex h-[90vh]"}`}>
       {
-        forms?.length > 0 && forms?.map((form,id)=>{
+        forms?.length > 0 ? forms?.map((form, id) => {
           return (
-            <div className='relative'>
-            <div key={id} className={`mb-4 relative w-full mx-auto p-6 bg-gray-100 rounded-xl shadow overflow-y-hidden ${expandedId === id ? "min-h-fit" : "h-52"
-            }`}>
-              
+            <div key={id} className='relative'>
+              <div key={id} className={`mb-4 relative w-full mx-auto p-6 bg-gray-100 rounded-xl shadow overflow-y-hidden ${expandedId === id ? "min-h-fit" : "h-52"}`}>
                 {
                   storeStates.map((stateName, idx) => {
                     const currentState = form[stateName.key]
@@ -62,21 +74,22 @@ const Home = () => {
                     );
                   })
                 }
-            </div>
-            <div className='absolute top-1 right-1 flex items-center gap-4 bg-gray-50 py-2 px-4 border-gray-500 shadow rounded-xl'>
-                <span onClick={()=>handleDelete(form._id)} className='cursor-pointer text-red-500'>
+              </div>
+              <div className='absolute top-1 right-1 flex items-center gap-4 bg-gray-50 py-2 px-4 border-gray-500 shadow rounded-xl'>
+                <span onClick={() => handleDelete(form._id)} className='cursor-pointer text-red-500 hover:scale-150 transition-all ease-in-out duration-500'>
                   <FaTrash />
                 </span>
-                <span onClick={()=>navigate("/create",{state:form})} className='cursor-pointer text-green-500'>
+                <span onClick={() => handleNavigate(form)} className='cursor-pointer text-green-500 hover:scale-150 transition-all ease-in-out duration-500'>
                   <FaPenToSquare />
                 </span>
-                <span onClick={() => handleToggle(id)} className='text-blue-500 text-xl cursor-pointer'>
+                <span onClick={() => handleToggle(id)} className='text-blue-500 text-xl hover:scale-150 transition-all ease-in-out duration-500 cursor-pointer'>
                   {expandedId === id ? <IoChevronUpCircle /> : <IoChevronDownCircleSharp />}
                 </span>
-            </div>
+              </div>
             </div>
           )
         })
+        : <p className='text-2xl text-gray-700 font-medium italic'>Opps!! No Record Found</p>
       }
     </div>
   )
